@@ -37,8 +37,10 @@ async def on_message(message):
     if is_goodnight_time():
         if pattern.search(message.content) is not None:
             print("[BOT] Found goodnight message")
-            for i in goodnight_emoji.split(" "):
-                await message.add_reaction(i)
+            # react with thumbs up
+            await message.add_reaction('👍')
+            # for i in goodnight_emoji.split(" "):
+            #     await message.add_reaction(i)
             await message.reply('Goodnight :)')
 
 @client.event

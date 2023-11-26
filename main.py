@@ -8,7 +8,7 @@ from datetime import datetime
 
 GOODNIGHT_TIMES = [20, 21, 22, 23, 0, 1, 2, 3, 4]
 
-API_TOKEN = 'MTE3MTM1OTM2MzE3MzIwODA3NA.GCkaYm.At_8JyON_HOIqYOTBObjoPgqeAGzdlv5Bi6QT8'# os.environ['API_TOKEN']
+API_TOKEN = os.environ['API_TOKEN']
 
 intents = discord.Intents.all()
 intents.voice_states = True

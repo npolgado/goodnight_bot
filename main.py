@@ -6,7 +6,7 @@ import re
 import os
 from datetime import datetime
 
-GOODNIGHT_TIMES = [20, 21, 22, 23, 0, 1, 2, 3, 4]
+GOODNIGHT_TIMES = [22, 23, 0, 1, 2, 3, 4, 5 ,6]
 
 API_TOKEN = os.environ['API_TOKEN']
 
@@ -16,10 +16,9 @@ intents.voice_states = True
 client = discord.Client(intents=intents)
 guild = discord.Guild
 
-pattern = re.compile(r'\bg(?:ood)?\s?n(?:ight)?\b', re.IGNORECASE)
+pattern = re.compile(r'\bg(?:ood)?\s?n(?:ight)?\b|\bg\s?n\b', re.IGNORECASE)
 
 goodnight_emoji = ":regional_indicator_g: :regional_indicator_o: :regional_indicator_o: :regional_indicator_d: :regional_indicator_n: :regional_indicator_i: :regional_indicator_g: :regional_indicator_h: :regional_indicator_t:"
-
 
 def is_goodnight_time():
     current_hour = datetime.now().hour
@@ -53,14 +52,14 @@ async def on_voice_state_update(member, before, after):
         print(f'{member.name} disconnected from {before.channel.name}')
         
         if is_goodnight_time():
-            if "knoble" in member.name:
+            #if "knoble" in member.name:
                 # spam goodnight
-                for i in range(2):
-                    mention = member.mention
-                    await client.get_channel(1035445680786911283).send('Goodnight Knoble :)')  
-            else:
-                mention = member.mention
-                await client.get_channel(1035445680786911283).send(f'Goodnight {mention} :)')
+                #for i in range(2):
+                    #mention = member.mention
+                    #await client.get_channel(1035445680786911283).send('Goodnight Knoble :)')
+            #else:
+            mention = member.mention
+            await client.get_channel(1035445680786911283).send(f'Goodnight {mention} :)')
 
 if __name__ == "__main__":
     client.run(API_TOKEN)

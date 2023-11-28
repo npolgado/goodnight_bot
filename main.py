@@ -16,7 +16,7 @@ intents.voice_states = True
 client = discord.Client(intents=intents)
 guild = discord.Guild
 
-pattern = re.compile(r'\bg(?:ood)?\s?n(?:ight)?\b|\bg\s?n\b', re.IGNORECASE)
+pattern = re.compile(r'\bg(?:ood)?\s?n(?:ight)?\b', re.IGNORECASE)
 
 goodnight_emoji = ":regional_indicator_g: :regional_indicator_o: :regional_indicator_o: :regional_indicator_d: :regional_indicator_n: :regional_indicator_i: :regional_indicator_g: :regional_indicator_h: :regional_indicator_t:"
 

@@ -5,6 +5,7 @@ from discord.ext import commands
 import re
 import os
 from datetime import datetime
+import time
 
 GOODNIGHT_TIMES = [22, 23, 0, 1, 2, 3, 4, 5 ,6]
 
@@ -36,10 +37,7 @@ async def on_message(message):
     if is_goodnight_time():
         if pattern.search(message.content) is not None:
             print("[BOT] Found goodnight message")
-            # react with thumbs up
             await message.add_reaction('👍')
-            # for i in goodnight_emoji.split(" "):
-            #     await message.add_reaction(i)
             await message.reply('Goodnight :)')
 
 @client.event
@@ -49,17 +47,18 @@ async def on_voice_state_update(member, before, after):
     
     if before.channel and not after.channel:
         # User disconnected from a voice channel
-        print(f'{member.name} disconnected from {before.channel.name}')
-        
+        print(f'[BOT] {member.name} disconnected from {before.channel.name}')
+        mention = member.mention
+
         if is_goodnight_time():
-            #if "knoble" in member.name:
+            if "knoble" in member.name:
                 # spam goodnight
-                #for i in range(2):
-                    #mention = member.mention
-                    #await client.get_channel(1035445680786911283).send('Goodnight Knoble :)')
-            #else:
-            mention = member.mention
-            await client.get_channel(1035445680786911283).send(f'Goodnight {mention} :)')
+                for i in range(2):
+                    await client.get_channel(1035445680786911283).send('Goodnight Knoble :)')
+                    time.sleep(0.5)
+                await client.get_channel(1035445680786911283).send(f'Goodnight {mention} :)')
+            else:
+                await client.get_channel(1035445680786911283).send(f'Goodnight {mention} :)')
 
 if __name__ == "__main__":
     client.run(API_TOKEN)

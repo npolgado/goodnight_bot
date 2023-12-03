@@ -32,7 +32,7 @@ goobs_lounge_general = 1035445680786911283
 
 intents = discord.Intents.all()
 intents.voice_states = True
-intents.message_reactions = True  # Enable reaction events
+# intents.message_reactions = True  # Enable reaction events
 
 client = discord.Client(intents=intents)
 guild = discord.Guild

@@ -90,11 +90,22 @@ async def on_voice_state_update(member, before, after):
             
             await client.get_channel(goobs_lounge_general).send(f'Goodnight {mention} :)')
 
+@client.event
+async def on_reaction_add(reaction, user):
+    if user.bot: return
+
+    # Check if the emoji is 💤 (sleeping emoji)
+    if str(reaction.emoji) == '💤':
+        # Respond with a zzz emoji
+        await reaction.message.add_reaction('💤')
+        print(f'[BOT] {user.display_name} reacted with 💤, and the bot responded with 💤')
+
 @tasks.loop(minutes=30)
 async def sweet_nothings():
     channel = client.get_channel(goobs_lounge_general)
 
     if channel and is_goodnight_time():
+        print("[BOT] Sending sweet nothing")
         selected_message = random.choice(GOODNIGHT_QUIPS)
         await channel.send(selected_message)
 

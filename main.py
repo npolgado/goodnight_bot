@@ -92,13 +92,19 @@ async def on_voice_state_update(member, before, after):
             await client.get_channel(goobs_lounge_general).send(f'Goodnight {mention} :)')
 
 @client.event
-async def on_raw_reaction_add(reaction):
-    print(reaction)
-    if reaction.user.bot: return
-    if str(reaction.emoji) == '💤':
-        # Respond with a zzz emoji
-        await reaction.message.add_reaction('💤')
-        print(f'[BOT] {reaction.user.display_name} reacted with 💤, and the bot responded with 💤')
+async def on_raw_reaction_add(payload):
+    # Check if the reaction is from a bot to avoid self-triggered events
+    if payload.user_id == client.user.id:
+        return
+
+    # Fetch the message
+    channel = client.get_channel(payload.channel_id)
+    message = await channel.fetch_message(payload.message_id)
+
+    # Check if the emoji is 💤 (Unicode representation of :zzz:)
+    if payload.emoji.name == '💤':
+        # Respond with the same emoji
+        await message.add_reaction('💤')
 
 @tasks.loop(minutes=30)
 async def sweet_nothings():

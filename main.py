@@ -10,7 +10,7 @@ from datetime import datetime
 import time
 
 GOODNIGHT_TIMES = [22, 23, 0, 1, 2]
-REAL_LATE_HOURS = [3, 4, 5, 6]
+REAL_LATE_HOURS = [3, 4, 5]
 
 REAL_LATE_QUIPS = [
     'its really quite simple.. just sleep',
@@ -69,8 +69,6 @@ GOODNIGHT_QUIPS = [
 
 API_TOKEN = os.environ['API_TOKEN']
 
-goobs_lounge_general = 1035445680786911283
-
 intents = discord.Intents.all()
 intents.voice_states = True
 # intents.message_reactions = True  # Enable reaction events
@@ -79,10 +77,12 @@ client = discord.Client(intents=intents)
 guild = discord.Guild
 
 pattern = re.compile(r'\bg(?:ood)?\s?n(?:ight)?\b', re.IGNORECASE)
+goobs_lounge_general = 1035445680786911283
+is_paused = False
 
 def is_real_late_hour():
     current_hour = datetime.now().hour
-    return current_hour in SHIDR_HOURS
+    return current_hour in REAL_LATE_QUIPS
 
 def is_goodnight_time():
     current_hour = datetime.now().hour
@@ -159,7 +159,7 @@ async def on_raw_reaction_add(payload):
 #     is_paused = False
 #     await ctx.send("Bot has been resumed.")
 
-@tasks.loop(minutes=30)
+@tasks.loop(hours=1)
 async def sweet_nothings():
     print("[BOT] Checking if its time to send a sweet nothing")
     channel = client.get_channel(goobs_lounge_general)

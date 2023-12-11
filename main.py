@@ -9,6 +9,8 @@ import os
 from datetime import datetime
 import time
 
+VERSION = "1.2"
+
 GOODNIGHT_TIMES = [22, 23, 0, 1, 2]
 REAL_LATE_HOURS = [3, 4, 5]
 
@@ -82,16 +84,17 @@ is_paused = False
 
 def is_real_late_hour():
     current_hour = datetime.now().hour
-    return current_hour in REAL_LATE_QUIPS
+    return current_hour in REAL_LATE_QUIPS # and is_paused == False
 
 def is_goodnight_time():
     current_hour = datetime.now().hour
-    return current_hour in GOODNIGHT_TIMES
+    return current_hour in GOODNIGHT_TIMES # and is_paused == False
 
 @client.event
 async def on_ready():
     print("[BOT] Changing precense...")
     await client.change_presence(activity=discord.Game('waiting to goodnight :)'))
+    await client.get_channel(goobs_lounge_general).send(f'running Goodnight bot v{VERSION}!! GJ!')
     await sweet_nothings.start()
 
 @client.event
@@ -147,18 +150,6 @@ async def on_raw_reaction_add(payload):
         # Respond with the same emoji
         await message.add_reaction('💤')
 
-# @client.command(name='pause')
-# async def pause(ctx):
-#     global is_paused
-#     is_paused = True
-#     await ctx.send("Bot has been paused. Use `!resume` to resume.")
-
-# @client.command(name='resume')
-# async def resume(ctx):
-#     global is_paused
-#     is_paused = False
-#     await ctx.send("Bot has been resumed.")
-
 @tasks.loop(hours=1)
 async def sweet_nothings():
     print("[BOT] Checking if its time to send a sweet nothing")
@@ -178,6 +169,18 @@ async def real_late_debacle():
         print("[BOT] Sending choice debacle message")
         selected_message = random.choice(REAL_LATE_QUIPS)
         await channel.send(selected_message)
+
+# @client.command(name='pause')
+# async def pause(ctx):
+#     global is_paused
+#     is_paused = True
+#     await ctx.send("Bot has been paused. Use `!resume` to resume.")
+
+# @client.command(name='resume')
+# async def resume(ctx):
+#     global is_paused
+#     is_paused = False
+#     await ctx.send("Bot has been resumed.")
 
 if __name__ == "__main__":
     print("[BOT] initalizing and running sleepytime bot man")

@@ -9,7 +9,7 @@ import os
 from datetime import datetime
 import time
 
-VERSION = "1.2"
+VERSION = "1.3"
 
 GOODNIGHT_TIMES = [22, 23, 0, 1, 2]
 REAL_LATE_HOURS = [3, 4, 5]
@@ -66,7 +66,16 @@ GOODNIGHT_QUIPS = [
     'Sleep is the best meditation. Goodnight!',
     'Dreamland is calling, are you ready to answer?',
     'Close your eyes and imagine the impossible. Goodnight!',
-    'Sleep is the golden chain that ties health and our bodies together.'
+    'Sleep is the golden chain that ties health and our bodies together.',
+    'Sleep is the best medicine for a restless soul.',
+    'can HARDLY KEEP MY EYES OPEN... SHEEEEEEEESH',
+    'sleep now so I can blow you a kiss',
+    'It’s normal to fall asleep between 10-20 minutes after going to bed.',
+    'Humans usually have between four to six dreams a night. Many sleep scientists believe dreams help your brain process the events of the day, so dreams are incredibly important!',
+    'The record for the longest period without sleep is 18 days, 21 hours, 40 minutes during a rocking chair marathon.',
+    'Think you can sleep 10 hours one night to catch up for a few nights of less than the recommended 7-9 hours of sleep? Think again. A Harvard study showed that sleeping extra to compensate for sleep times decreased reaction times and the ability to focus. That means—practice good sleep hygiene as best you can to show up as your best self every day.',
+    '1 in every 2,000 adults has narcolepsy. In the U.S., that equates to about 165,950 people.',
+    'Babies up to 1 year old need 12 to 16 hours of sleep each day, including naps.',
 ]
 
 API_TOKEN = os.environ['API_TOKEN']
@@ -78,7 +87,7 @@ intents.voice_states = True
 client = discord.Client(intents=intents)
 guild = discord.Guild
 
-pattern = re.compile(r'\bg(?:ood)?\s?n(?:ight)?\b', re.IGNORECASE)
+pattern = re.compile(r'\bg(?:ood)(?:\s?n(?:ight|ite)?)\b|\b(?:g(?:\s*)n)+\b', re.IGNORECASE) # WAS --> r'\bg(?:ood)?\s?n(?:ight)?\b'
 goobs_lounge_general = 1035445680786911283
 is_paused = False
 
@@ -94,7 +103,7 @@ def is_goodnight_time():
 async def on_ready():
     print("[BOT] Changing precense...")
     await client.change_presence(activity=discord.Game('waiting to goodnight :)'))
-    await client.get_channel(goobs_lounge_general).send(f'running Goodnight bot v{VERSION}!! GJ!')
+    # await client.get_channel(goobs_lounge_general).send(f'running Goodnight bot v{VERSION}!! GJ!')
     await sweet_nothings.start()
 
 @client.event
@@ -121,6 +130,7 @@ async def on_voice_state_update(member, before, after):
         if is_real_late_hour():
             print(f'[BOT] {member.name} joined {channel.name} during a shiddr hour')
             await client.get_channel(goobs_lounge_general).send(f'whoa whoa.. good, MoRnInG {member.mention} >:(')
+            print("[BOT] has been triggered to send a real late debacle")
             await real_late_debacle.start()
 
     if before.channel and not after.channel:
@@ -160,9 +170,8 @@ async def sweet_nothings():
         selected_message = random.choice(GOODNIGHT_QUIPS)
         await channel.send(selected_message)
 
-@tasks.loop(seconds=1, count=3)
+@tasks.loop(seconds=1, count=5)
 async def real_late_debacle():
-    print("[BOT] has been triggered to send a real late debacle")
     channel = client.get_channel(goobs_lounge_general)
     
     if channel and is_real_late_hour():
@@ -170,18 +179,6 @@ async def real_late_debacle():
         selected_message = random.choice(REAL_LATE_QUIPS)
         await channel.send(selected_message)
 
-# @client.command(name='pause')
-# async def pause(ctx):
-#     global is_paused
-#     is_paused = True
-#     await ctx.send("Bot has been paused. Use `!resume` to resume.")
-
-# @client.command(name='resume')
-# async def resume(ctx):
-#     global is_paused
-#     is_paused = False
-#     await ctx.send("Bot has been resumed.")
-
 if __name__ == "__main__":
-    print("[BOT] initalizing and running sleepytime bot man")
+    print(f"[BOT] initalizing and running sleepytime bot man, Version = {VERSION}")
     client.run(API_TOKEN)

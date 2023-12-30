@@ -1,15 +1,13 @@
 import os
-import requests
 import discord
 from discord.ext import commands, tasks
 import random
-import asyncio
 import re
 import os
 from datetime import datetime
 import time
 
-VERSION = "1.3"
+VERSION = "1.4"
 
 GOODNIGHT_TIMES = [22, 23, 0, 1, 2]
 REAL_LATE_HOURS = [3, 4, 5]
@@ -92,9 +90,11 @@ client = discord.Client(intents=intents)
 guild = discord.Guild
 
 pattern = re.compile(r'\bg(?:ood)(?:\s?n(?:ight|ite)?)\b|\b(?:g(?:\s*)n)+\b', re.IGNORECASE) # WAS --> r'\bg(?:ood)?\s?n(?:ight)?\b'
+
 goobs_lounge_general = 1035445680786911283
 goodnight_channel = 1190584590625165364
-is_paused = False
+
+is_paused = False # TODO: unused
 
 def is_real_late_hour():
     current_hour = datetime.now().hour
@@ -108,7 +108,7 @@ def is_goodnight_time():
 async def on_ready():
     print("[BOT] Changing precense...")
     await client.change_presence(activity=discord.Game('waiting to goodnight :)'))
-    # await client.get_channel(goobs_lounge_general).send(f'running Goodnight bot v{VERSION}!! GJ!')
+    await client.get_channel(goodnight_channel).send(f'running Goodnight bot v{VERSION}!! Guud JAAAAB!')
     await sweet_nothings.start()
 
 @client.event

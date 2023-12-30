@@ -51,7 +51,7 @@ GOODNIGHT_QUIPS = [
     'golly gee its late',
     'its time to sleep... or is it?',
     'gee wilikers im getting sleepy',
-    'heavens to betsy im getting ',
+    'heavens to betsy im getting real real real REAAAAAAL tired!1!',
     'Dream big, sleep well!',
     'Time to recharge those batteries!',
     'May your dreams be as sweet as sugar!',
@@ -76,6 +76,10 @@ GOODNIGHT_QUIPS = [
     'Think you can sleep 10 hours one night to catch up for a few nights of less than the recommended 7-9 hours of sleep? Think again. A Harvard study showed that sleeping extra to compensate for sleep times decreased reaction times and the ability to focus. That means—practice good sleep hygiene as best you can to show up as your best self every day.',
     '1 in every 2,000 adults has narcolepsy. In the U.S., that equates to about 165,950 people.',
     'Babies up to 1 year old need 12 to 16 hours of sleep each day, including naps.',
+    'Alllllright later bro, goodnight dude, aight bro im out of here... alright goodnight',
+    '... PUSSY!',
+    'Aight bro, its getting late, peace dude cya dude, goodnight bro, alright bro im out of here... alright goodnight',
+    'if you dont respond in 5 SECONDS.....'
 ]
 
 API_TOKEN = os.environ['API_TOKEN']
@@ -89,6 +93,7 @@ guild = discord.Guild
 
 pattern = re.compile(r'\bg(?:ood)(?:\s?n(?:ight|ite)?)\b|\b(?:g(?:\s*)n)+\b', re.IGNORECASE) # WAS --> r'\bg(?:ood)?\s?n(?:ight)?\b'
 goobs_lounge_general = 1035445680786911283
+goodnight_channel = 1190584590625165364
 is_paused = False
 
 def is_real_late_hour():
@@ -129,7 +134,7 @@ async def on_voice_state_update(member, before, after):
         
         if is_real_late_hour():
             print(f'[BOT] {member.name} joined {channel.name} during a shiddr hour')
-            await client.get_channel(goobs_lounge_general).send(f'whoa whoa.. good, MoRnInG {member.mention} >:(')
+            await client.get_channel(goodnight_channel).send(f'whoa whoa.. good, MoRnInG {member.mention} >:(')
             print("[BOT] has been triggered to send a real late debacle")
             await real_late_debacle.start()
 
@@ -140,10 +145,10 @@ async def on_voice_state_update(member, before, after):
             print(f'[BOT] {member.name} disconnected from {before.channel.name} in a goodnight hour')
             if "knoble" in member.name: # knoble clause
                 for i in range(2):
-                    await client.get_channel(goobs_lounge_general).send('Goodnight Knoble :)')
+                    await client.get_channel(goodnight_channel).send('Goodnight Knoble :)')
                     time.sleep(0.1)
             
-            await client.get_channel(goobs_lounge_general).send(f'Goodnight {mention} :)')
+            await client.get_channel(goodnight_channel).send(f'Goodnight {mention} :)')
 
 @client.event
 async def on_raw_reaction_add(payload):
@@ -163,7 +168,7 @@ async def on_raw_reaction_add(payload):
 @tasks.loop(hours=1)
 async def sweet_nothings():
     print("[BOT] Checking if its time to send a sweet nothing")
-    channel = client.get_channel(goobs_lounge_general)
+    channel = client.get_channel(goodnight_channel)
 
     if channel and is_goodnight_time():
         print("[BOT] Sending sweet nothing")
@@ -172,7 +177,7 @@ async def sweet_nothings():
 
 @tasks.loop(seconds=1, count=5)
 async def real_late_debacle():
-    channel = client.get_channel(goobs_lounge_general)
+    channel = client.get_channel(goodnight_channel)
     
     if channel and is_real_late_hour():
         print("[BOT] Sending choice debacle message")

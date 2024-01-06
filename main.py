@@ -8,7 +8,7 @@ from datetime import datetime
 import time
 import sys
 
-VERSION = "1.4"
+VERSION = "1.4.1"
 
 GOODNIGHT_TIMES = [22, 23, 0, 1, 2]
 REAL_LATE_HOURS = [3, 4, 5]
@@ -29,14 +29,15 @@ REAL_LATE_QUIPS = [
     'im actually so mad',
     'just say that you hate me and go',
     'aight im done',
-    'aight im done',
+    'im so done',
     'youll never hear from me again',
     'fuming atm',
     'curse words are allowed in this server at this moment btw... just saying',
     '>:(',
     'in this economy?, on my fucking birthday??!?!?',
     'you disgust me',
-    'so schnee bro'
+    'so schnee bro',
+    'youre so weak oml'
 ]
 
 GOODNIGHT_QUIPS = [
@@ -73,7 +74,6 @@ GOODNIGHT_QUIPS = [
     'can HARDLY KEEP MY EYES OPEN... SHEEEEEEEESH',
     'sleep now so I can blow you a kiss',
     'Alllllright later bro, goodnight dude, aight bro im out of here... alright goodnight',
-    '... PUSSY!',
     'Aight bro, its getting late, peace dude cya dude, goodnight bro, alright bro im out of here... alright goodnight',
     'if you dont respond in 5 SECONDS.....',
     'sooo RAM, Scav, jay, ep? jay ep ram ram ram?? ep ep ep! scav scav scav! ram jam ram jam unless remake/dog',
@@ -186,12 +186,11 @@ async def on_voice_state_update(member, before, after):
                     await client.get_channel(goodnight_channel).send('Goodnight Knoble :)')
                     time.sleep(0.1)
             
+            await client.get_channel(goodnight_channel).send(f'Goodnight {mention} :)')
+
             # rare goodnight clause
             if is_rare_goodnight():
                 await client.get_channel(goodnight_channel).send(f'{random.choice(RARE_GOODNIGHT_OPTIONS)}')
-                return
-
-            await client.get_channel(goodnight_channel).send(f'Goodnight {mention} :)')
 
 @client.event
 async def on_raw_reaction_add(payload):

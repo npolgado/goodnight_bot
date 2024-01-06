@@ -8,7 +8,7 @@ from datetime import datetime
 import time
 import sys
 
-VERSION = "1.4.1"
+VERSION = "1.4.2"
 
 GOODNIGHT_TIMES = [22, 23, 0, 1, 2]
 REAL_LATE_HOURS = [3, 4, 5]
@@ -126,18 +126,9 @@ pattern = re.compile(r'\bg(?:ood)(?:\s?n(?:ight|ite)?)\b|\b(?:g(?:\s*)n)+\b', re
 goobs_lounge_general = 1035445680786911283
 goodnight_channel = 1190584590625165364
 
-is_paused = False # TODO: unused
-
-def is_rare_goodnight():
-    return random.random() < RARE_GOODNIGHT_CHANCE
-
-def is_real_late_hour():
-    current_hour = datetime.now().hour
-    return current_hour in REAL_LATE_QUIPS # and is_paused == False
-
-def is_goodnight_time():
-    current_hour = datetime.now().hour
-    return current_hour in GOODNIGHT_TIMES # and is_paused == False
+def is_rare_goodnight(): return random.random() < RARE_GOODNIGHT_CHANCE
+def is_real_late_hour(): return datetime.now().hour in REAL_LATE_QUIPS
+def is_goodnight_time(): return datetime.now().hour in GOODNIGHT_TIMES
 
 @client.event
 async def on_ready():
@@ -206,6 +197,10 @@ async def on_raw_reaction_add(payload):
     if payload.emoji.name == '💤':
         # Respond with the same emoji
         await message.add_reaction('💤')
+
+    if payload.emoji.name == '👀':
+        # Respond with the same emoji
+        await message.add_reaction('👀')
 
 @tasks.loop(hours=1)
 async def sweet_nothings():

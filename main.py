@@ -8,7 +8,7 @@ from datetime import datetime
 import time
 import sys
 
-VERSION = "1.4.2"
+VERSION = "1.4.3"
 
 GOODNIGHT_TIMES = [22, 23, 0, 1, 2]
 REAL_LATE_HOURS = [3, 4, 5]
@@ -110,7 +110,8 @@ except Exception as e:
     print(e)
     sys.exit()
 
-RARE_GOODNIGHT_CHANCE = 0.1
+RARE_GN_CHANCE_MIN = 0.0
+RARE_GN_CHANCE_MAX = 0.5
 
 API_TOKEN = os.environ['API_TOKEN']
 
@@ -126,9 +127,18 @@ pattern = re.compile(r'\bg(?:ood)(?:\s?n(?:ight|ite)?)\b|\b(?:g(?:\s*)n)+\b', re
 goobs_lounge_general = 1035445680786911283
 goodnight_channel = 1190584590625165364
 
-def is_rare_goodnight(): return random.random() < RARE_GOODNIGHT_CHANCE
+todays_rare_gn_chance = 0.0
+
+def is_rare_goodnight(): return random.random() < todays_rare_gn_chance
+
 def is_real_late_hour(): return datetime.now().hour in REAL_LATE_QUIPS
-def is_goodnight_time(): return datetime.now().hour in GOODNIGHT_TIMES
+
+def is_goodnight_time():
+    hour = datetime.now().hour
+    if hour == 0:
+        global todays_rare_gn_chance
+        todays_rare_gn_chance = random.uniform(RARE_GN_CHANCE_MIN, RARE_GN_CHANCE_MAX)
+    return datetime.now().hour in GOODNIGHT_TIMES
 
 @client.event
 async def on_ready():

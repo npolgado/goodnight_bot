@@ -9,6 +9,16 @@ contains python script for the bot. the main functionality is listening for "goo
 this needs to be run in the background somewhere in order for the bot to work. 
 
 
+# TODO
+
+- [ ] point based chance for rare goodnight based on 
+    - muting
+    - time spent in channel
+    - time since last goodnight
+    - streaming
+- [ ] convert quotes to json files
+
+
 # To Install
 
 I followed this guide to make a bot

@@ -1,0 +1,4 @@
+- Added random daily *rare* goodnight chance
+- Internal printing for more debugging
+- Patch notes will now display on update
+- slight change in goodnight reply behavior

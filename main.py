@@ -8,7 +8,7 @@ from datetime import datetime
 import time
 import sys
 
-VERSION = "1.4.3"
+VERSION = "1.4.4"
 
 GOODNIGHT_TIMES = [22, 23, 0, 1, 2]
 REAL_LATE_HOURS = [3, 4, 5]
@@ -129,6 +129,22 @@ goodnight_channel = 1190584590625165364
 
 todays_rare_gn_chance = 0.0
 
+def pp(msg:str, sep:bool=False): 
+    # get method that called this method
+    caller = str(sys._getframe(1).f_code.co_name).upper()
+
+    print(f"[{caller}] {msg}")
+    if sep: print("--------------------------------------------------")
+
+def get_patch_notes():
+    try:
+        with open('patch_notes.txt', 'r') as f:
+            patch_notes = f.readlines()
+        return patch_notes
+    except Exception as e:
+        print(e)
+        return ["No patch notes found :("]
+
 def is_rare_goodnight(): return random.random() < todays_rare_gn_chance
 
 def is_real_late_hour(): return datetime.now().hour in REAL_LATE_QUIPS
@@ -142,9 +158,14 @@ def is_goodnight_time():
 
 @client.event
 async def on_ready():
-    print("[BOT] Changing precense...")
+    pp("Changing precense...")
     await client.change_presence(activity=discord.Game('waiting to goodnight :)'))
-    await client.get_channel(goodnight_channel).send(f'running Goodnight bot v{VERSION}!! Guud JAAAAB!')
+    await client.get_channel(goodnight_channel).send(f'running Goodnight bot v{VERSION}!! Guud JAAAAB! See patch notes below:')
+    
+    for i in get_patch_notes():
+        await client.get_channel(goodnight_channel).send(i)
+    
+    pp("Starting background task...",True)
     await sweet_nothings.start()
 
 @client.event
@@ -153,23 +174,26 @@ async def on_message(message):
 
     if is_goodnight_time() or is_real_late_hour():
         if pattern.search(message.content) is not None:
-            print("[BOT] Found goodnight message")
+            pp(f"\tSending goodnight message to {message.author.name}",True)
             await message.add_reaction('👍')
             await message.reply('Goodnight :)')
 
             if is_rare_goodnight():
+                pp("\tSending rare goodnight as well :)",True)
                 await message.reply(f'{random.choice(RARE_GOODNIGHT_OPTIONS)}')
+    
+    pp("\tmessage process done", True)
 
 @client.event
 async def on_voice_state_update(member, before, after):
-    print(f"[BOT] {member.name} changed voice state, before: {before.channel}, after: {after.channel}")
+    pp(f"\n\t{member.name} changed voice state, before: {before.channel}, after: {after.channel}")
     if member == client.user: return
     
     # SOMEONE JOINED A CHANNEL DURING A REAL LATE HOUR
     if before.channel is None and after.channel is not None and is_real_late_hour():
         channel = after.channel
-        print(f'[BOT] {member.name} joined {channel.name} during a real late hour')
-        print("[BOT] has been triggered to send a real late debacle")
+        pp(f'\t{member.name} joined {channel.name} during a real late hour')
+        pp("\thas been triggered to send a real late debacle")
         
         await client.get_channel(goodnight_channel).send(f'whoa whoa.. good, MoRnInG {member.mention} >:(')
         await real_late_debacle.start()
@@ -179,7 +203,7 @@ async def on_voice_state_update(member, before, after):
         mention = member.mention
 
         if is_goodnight_time():
-            print(f'[BOT] {member.name} disconnected from {before.channel.name} in a goodnight hour')
+            pp(f'\n\t{member.name} disconnected from {before.channel.name} in a goodnight hour')
             
             # knoble clause
             if "knoble" in member.name:
@@ -191,7 +215,10 @@ async def on_voice_state_update(member, before, after):
 
             # rare goodnight clause
             if is_rare_goodnight():
+                pp(f'\n\tSending rare goodnight as well :)',True)
                 await client.get_channel(goodnight_channel).send(f'{random.choice(RARE_GOODNIGHT_OPTIONS)}')
+    
+    pp("\tvc process done", True)
 
 @client.event
 async def on_raw_reaction_add(payload):
@@ -214,23 +241,27 @@ async def on_raw_reaction_add(payload):
 
 @tasks.loop(hours=1)
 async def sweet_nothings():
-    print("[BOT] Checking if its time to send a sweet nothing")
+    pp("\n\t\tChecking if its time to send a sweet nothing")
     channel = client.get_channel(goodnight_channel)
 
     if channel and is_goodnight_time():
-        print("[BOT] Sending sweet nothing")
+        pp("\t\tSending sweet nothing", True)
         selected_message = random.choice(GOODNIGHT_QUIPS)
         await channel.send(selected_message)
+    
+    pp("\ttask done!", True)
 
 @tasks.loop(seconds=1, count=5)
 async def real_late_debacle():
     channel = client.get_channel(goodnight_channel)
     
     if channel and is_real_late_hour():
-        print("[BOT] Sending choice debacle message")
+        pp("\tSending choice debacle message")
         selected_message = random.choice(REAL_LATE_QUIPS)
         await channel.send(selected_message)
+    
+    pp("\ttask done!", True)
 
 if __name__ == "__main__":
-    print(f"[BOT] initalizing and running sleepytime bot man, Version = {VERSION}")
+    pp(f"\t[BOT]initalizing and running sleepytime bot man, Version = {VERSION}",True)
     client.run(API_TOKEN)

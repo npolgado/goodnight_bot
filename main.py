@@ -8,10 +8,10 @@ from datetime import datetime
 import time
 import sys
 
-VERSION = "1.4.4"
+VERSION = "1.5.0"
 
 GOODNIGHT_TIMES = [22, 23, 0, 1, 2]
-REAL_LATE_HOURS = [3, 4, 5]
+REAL_LATE_HOURS = [2, 3, 4, 5] # EYES EMOJI
 
 REAL_LATE_QUIPS = [
     'its really quite simple.. just sleep',
@@ -42,9 +42,7 @@ REAL_LATE_QUIPS = [
 
 GOODNIGHT_QUIPS = [
     'Mwah!',
-    'Sleep Tight!',
-    'its gettttinnn late',
-    '*SIGGGGGGGGH*',
+    'its gettttinnn late *SIGGGGGGGGH* Sleep Tight!',
     'goodnight to anyone who is still awake but possibly sleepy',
     'ah that time of the night huh',
     'wakey wakey?? more like sleepey sleepey',
@@ -62,32 +60,42 @@ GOODNIGHT_QUIPS = [
     'Wishing you a peaceful night and sweet dreams!',
     'As the stars twinkle, its time to get some sprinkle of dreams!',
     'Rest those eyes, tomorrow is a new sunrise!',
-    'Goodnight, sleep like a baby!',
-    'Sending you a pillow of happy thoughts!',
+    'Goodnight, sleep like a baby! Sending you a pillow of happy thoughts!',
     'May your sleep be as deep as your dreams!',
     'Night is here, the moon is bright, and its time to say goodnight!',
     'Sleep is the best meditation. Goodnight!',
     'Dreamland is calling, are you ready to answer?',
     'Close your eyes and imagine the impossible. Goodnight!',
     'Sleep is the golden chain that ties health and our bodies together.',
-    'Sleep is the best medicine for a restless soul.',
     'can HARDLY KEEP MY EYES OPEN... SHEEEEEEEESH',
     'sleep now so I can blow you a kiss',
     'Alllllright later bro, goodnight dude, aight bro im out of here... alright goodnight',
     'Aight bro, its getting late, peace dude cya dude, goodnight bro, alright bro im out of here... alright goodnight',
     'if you dont respond in 5 SECONDS.....',
     'sooo RAM, Scav, jay, ep? jay ep ram ram ram?? ep ep ep! scav scav scav! ram jam ram jam unless remake/dog',
+    'sooo ketketketketketketketket jay ep ram ram ram?? gotta ep patch then patch then ram?? YOU CAN NEVER THANK ME ENOUGH',
     'aight bro, im out of here... alright goodnight',
     'usually id say goodnight here but... im not going to',
     'zzzzzzz ZEEEEE',
     'did you know, that if you dont sleep, you will die?',
     'i heard if you dont sleep in 5 seconds...',
     'sleepimon... I CHOOSE YOU!',
+    'have a swell night night :)',
+    'why keep eye open when eye close do trick!!',
+    'alllright bro, im out of here... alright goodnight',
+    'this is just way too much for me immma take a quick zzzz',
+    '<3 zzzz <3 zzzz <3 zzzz <3 zzzz <3 zzzz <3 zzzz <3 zzzz <3 zzzz <3',
+    'just pisssin on yer grave.... IM ONE OF A KINDDDDD (sleep tight :) )',
+    'LADY LUUUUCKY SMILIN... the fuck queue up or sleep the fuck',
+    'NOW IM NOT GONNA SSAAAAAAYYYYYYY GO TO SLEEP... but gtf to sleep',
+    'WOWZERS THEY NOT SLEEP YET???',
+    '..... reallly.... not gonna say goodnight back.... REALLLY???!??',
     
     # goodnight in the theme of a pirate
     'Yarrr, goodnight to ye matey',
     'AHOY! goodnight to ye matey',
     'THAR SHE BLOWWWSSS, wishing thee a goodnight',
+    'MATEY! ME GOT SCRUVY, GN GN'
 
     # facts about sleep
     'Sleep is important for various aspects of brain function. This includes cognition, concentration, productivity and performance.',
@@ -111,7 +119,7 @@ except Exception as e:
     sys.exit()
 
 RARE_GN_CHANCE_MIN = 0.0
-RARE_GN_CHANCE_MAX = 0.5
+RARE_GN_CHANCE_MAX = 0.3
 
 API_TOKEN = os.environ['API_TOKEN']
 
@@ -122,12 +130,16 @@ intents.voice_states = True
 client = discord.Client(intents=intents)
 guild = discord.Guild
 
-pattern = re.compile(r'\bg(?:ood)(?:\s?n(?:ight|ite)?)\b|\b(?:g(?:\s*)n)+\b', re.IGNORECASE) # WAS --> r'\bg(?:ood)?\s?n(?:ight)?\b'
+# USED TO BE r'\bg(?:ood)?\s?n(?:ight)?\b'
+pattern = re.compile(r'\bg(?:ood)(?:\s?n(?:ight|ite)?)\b|\b(?:g(?:\s*)n)+\b', re.IGNORECASE) 
 
 goobs_lounge_general = 1035445680786911283
 goodnight_channel = 1190584590625165364
 
 todays_rare_gn_chance = 0.0
+rare_goodnight_has_not_been_set = True
+
+user_activity = {}
 
 def pp(msg:str, sep:bool=False): 
     # get method that called this method
@@ -150,10 +162,27 @@ def is_rare_goodnight(): return random.random() < todays_rare_gn_chance
 def is_real_late_hour(): return datetime.now().hour in REAL_LATE_QUIPS
 
 def is_goodnight_time():
+
     hour = datetime.now().hour
-    if hour == 0:
-        global todays_rare_gn_chance
+
+    
+    global todays_rare_gn_chance, rare_goodnight_has_not_been_set, user_activity
+    # reset rare goodnight chance on first hour of the day
+    if hour == 0 and rare_goodnight_has_not_been_set:
         todays_rare_gn_chance = random.uniform(RARE_GN_CHANCE_MIN, RARE_GN_CHANCE_MAX)
+        rare_goodnight_has_not_been_set = False
+        
+        user_activity = {}
+        
+        pp(f"\tTodays rare goodnight chance is {todays_rare_gn_chance}", True)
+        pp(f"\tUser activity: {user_activity}", True)
+
+    # reset rare goodnight chance after first hour of the day
+    if hour == 1: 
+        pp(f"\tResetting rare goodnight chance", True)
+        rare_goodnight_has_not_been_set = True
+
+
     return datetime.now().hour in GOODNIGHT_TIMES
 
 @client.event
@@ -190,7 +219,7 @@ async def on_voice_state_update(member, before, after):
     if member == client.user: return
     
     # SOMEONE JOINED A CHANNEL DURING A REAL LATE HOUR
-    if before.channel is None and after.channel is not None and is_real_late_hour():
+    if after.channel and not before.channel and is_real_late_hour():
         channel = after.channel
         pp(f'\t{member.name} joined {channel.name} during a real late hour')
         pp("\thas been triggered to send a real late debacle")
@@ -198,25 +227,28 @@ async def on_voice_state_update(member, before, after):
         await client.get_channel(goodnight_channel).send(f'whoa whoa.. good, MoRnInG {member.mention} >:(')
         await real_late_debacle.start()
 
+        if is_rare_goodnight():
+            pp("\tSending rare goodnight as well :)",True)
+            await client.get_channel(goodnight_channel).send(f'{random.choice(RARE_GOODNIGHT_OPTIONS)}')
+
     # SOMEONE LEFT A CHANNEL
-    if before.channel and not after.channel:
+    if before.channel and not after.channel and is_goodnight_time():
         mention = member.mention
 
-        if is_goodnight_time():
-            pp(f'\n\t{member.name} disconnected from {before.channel.name} in a goodnight hour')
-            
-            # knoble clause
-            if "knoble" in member.name:
-                for i in range(2):
-                    await client.get_channel(goodnight_channel).send('Goodnight Knoble :)')
-                    time.sleep(0.1)
-            
-            await client.get_channel(goodnight_channel).send(f'Goodnight {mention} :)')
+        pp(f'\n\t{member.name} disconnected from {before.channel.name} in a goodnight hour')
+        
+        # knoble clause
+        if "knoble" in member.name:
+            for i in range(2):
+                await client.get_channel(goodnight_channel).send('Goodnight Knoble :)')
+                time.sleep(0.1)
+        
+        await client.get_channel(goodnight_channel).send(f'Goodnight {mention} :)')
 
-            # rare goodnight clause
-            if is_rare_goodnight():
-                pp(f'\n\tSending rare goodnight as well :)',True)
-                await client.get_channel(goodnight_channel).send(f'{random.choice(RARE_GOODNIGHT_OPTIONS)}')
+        # rare goodnight clause
+        if is_rare_goodnight():
+            pp(f'\n\tSending rare goodnight as well :)',True)
+            await client.get_channel(goodnight_channel).send(f'{random.choice(RARE_GOODNIGHT_OPTIONS)}')
     
     pp("\tvc process done", True)
 
@@ -249,7 +281,7 @@ async def sweet_nothings():
         selected_message = random.choice(GOODNIGHT_QUIPS)
         await channel.send(selected_message)
     
-    pp("\ttask done!", True)
+    pp("\tsweet_nothings done!", True)
 
 @tasks.loop(seconds=1, count=5)
 async def real_late_debacle():
@@ -260,7 +292,7 @@ async def real_late_debacle():
         selected_message = random.choice(REAL_LATE_QUIPS)
         await channel.send(selected_message)
     
-    pp("\ttask done!", True)
+    pp("\treal_late_debacle done!", True)
 
 if __name__ == "__main__":
     pp(f"\t[BOT]initalizing and running sleepytime bot man, Version = {VERSION}",True)

@@ -1,4 +1,5 @@
-- Added random daily *rare* goodnight chance
-- Internal printing for more debugging
-- Patch notes will now display on update
-- slight change in goodnight reply behavior
+- New quips!! looks out for some new goodnight and rare goodnights
+- Fixed bug on rare goodnight chance daily updates
+- Testing new REAL LATE HOURS behavior
+
+As always please DM mr pickolas for any bugs or additional ideas you would like added

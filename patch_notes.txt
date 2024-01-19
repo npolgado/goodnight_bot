@@ -1,4 +1,3 @@
-- New quips!! looks out for some new goodnight and rare goodnights
-- Fixed bug on rare goodnight chance daily updates
-- Testing new REAL LATE HOURS behavior
+- Display yesterdays rare goodnight chance each day
+- more quips :)
 As always please DM mr pickolas for any bugs or additional ideas you would like added

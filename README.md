@@ -1,6 +1,9 @@
 # goodnight_bot
 discord goodnight bot to reply to goodnight messages in #general
 
+this is less of code and more of art. the wording, the architecture, its all with purpose /s. Debugging and deploying this on an nvidia jetson was a pain but the process is easy not. push from desktop and login to the tmux on the jetson and pull to restart. the code takes care of the rest assuming I keep the api key.  
+
+just practicing python and discord bots. 
 
 # main.py
 

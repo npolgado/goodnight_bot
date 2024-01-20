@@ -8,7 +8,7 @@ from datetime import datetime
 import time
 import sys
 
-VERSION = "1.5.1"
+VERSION = "1.5.2"
 
 GOODNIGHT_TIMES = [22, 23, 0, 1, 2]
 REAL_LATE_HOURS = [2, 3, 4, 5] # EYES EMOJI
@@ -179,45 +179,32 @@ def is_rare_goodnight(): return random.random() < todays_rare_gn_chance
 
 def is_real_late_hour(): return datetime.now().hour in REAL_LATE_QUIPS
 
-def is_goodnight_time():
+def is_goodnight_time(): return datetime.now().hour in GOODNIGHT_TIMES
 
-    hour = datetime.now().hour
-
+def count_goodnight(name):
+    global user_activity
+    if name in user_activity:   user_activity[name]["gn"] += 1
     
-    global todays_rare_gn_chance, rare_goodnight_has_not_been_set, user_activity
-    # reset rare goodnight chance on first hour of the day
-    if hour == 0 and rare_goodnight_has_not_been_set:
-        # send yesterdays rare goodnight chance in the goodnight channel 
-        try:
-            yesterdays_chance = todays_rare_gn_chance*100
-            client.get_channel(goodnight_channel).send(f'Yesterdays rare goodnight chance was {yesterdays_chance} % :>)')
-        except Exception as e:
-            pp(f"\tCould not send yesterdays rare goodnight :()\n")
-            pp(e, True)
+    else: user_activity[name] = {"gn": 1, "real_late": 0, "rare_gn": 0}
 
-        # reset todays rare goodnight chance
-        todays_rare_gn_chance = random.uniform(RARE_GN_CHANCE_MIN, RARE_GN_CHANCE_MAX)
-        rare_goodnight_has_not_been_set = False
-        
-        user_activity = {}
-        
-        pp(f"\tTodays rare goodnight chance is {todays_rare_gn_chance}", True)
-        pp(f"\tUser activity: {user_activity}", True)
+def count_real_late_debacle(name):
+    global user_activity
+    if name in user_activity:   user_activity[name]["real_late"] += 1
+    
+    else: user_activity[name] = {"gn": 0, "real_late": 1, "rare_gn": 0}
 
-    # reset rare goodnight chance after first hour of the day
-    if hour == 1: 
-        pp(f"\tResetting rare goodnight chance", True)
-        rare_goodnight_has_not_been_set = True
-
-
-    return datetime.now().hour in GOODNIGHT_TIMES
+def count_rare_goodnight(name):
+    global user_activity
+    if name in user_activity:   user_activity[name]["rare_gn"] += 1
+    
+    else: user_activity[name] = {"gn": 0, "real_late": 0, "rare_gn": 1}
 
 @client.event
 async def on_ready():
     pp("Changing precense...")
     await client.change_presence(activity=discord.Game('waiting to goodnight :)'))
+
     await client.get_channel(goodnight_channel).send(f'running Goodnight bot v{VERSION}!! Guud JAAAAB! See patch notes below:')
-    
     for i in get_patch_notes():
         await client.get_channel(goodnight_channel).send(i)
     
@@ -233,10 +220,12 @@ async def on_message(message):
             pp(f"\tSending goodnight message to {message.author.name}",True)
             await message.add_reaction('👍')
             await message.reply('Goodnight :)')
+            count_goodnight(message.author.name)
 
             if is_rare_goodnight():
                 pp("\tSending rare goodnight as well :)",True)
                 await message.reply(f'{random.choice(RARE_GOODNIGHT_OPTIONS)}')
+                count_rare_goodnight(message.author.name)
     
     pp("\tmessage process done", True)
 
@@ -248,35 +237,41 @@ async def on_voice_state_update(member, before, after):
     # SOMEONE JOINED A CHANNEL DURING A REAL LATE HOUR
     if after.channel and not before.channel and is_real_late_hour():
         channel = after.channel
+        
         pp(f'\t{member.name} joined {channel.name} during a real late hour')
         pp("\thas been triggered to send a real late debacle")
         
         await client.get_channel(goodnight_channel).send(f'whoa whoa.. good, MoRnInG {member.mention} >:(')
-        await real_late_debacle.start()
 
         if is_rare_goodnight():
-            pp("\tSending rare goodnight as well :)",True)
+            pp(f'\n\tSending rare goodnight as well :)',True)
             await client.get_channel(goodnight_channel).send(f'{random.choice(RARE_GOODNIGHT_OPTIONS)}')
+            count_rare_goodnight(member.name)
 
-    # SOMEONE LEFT A CHANNEL
+        await real_late_debacle.start()
+        count_real_late_debacle(member.name)
+
+    # SOMEONE LEFT A CHANNEL DURING A GOODNIGHT HOUR
     if before.channel and not after.channel and is_goodnight_time():
         mention = member.mention
 
         pp(f'\n\t{member.name} disconnected from {before.channel.name} in a goodnight hour')
         
-        # knoble clause
-        if "knoble" in member.name:
-            for i in range(2):
-                await client.get_channel(goodnight_channel).send('Goodnight Knoble :)')
-                time.sleep(0.1)
+        # # knoble clause
+        # if "knoble" in member.name:
+        #     for i in range(2):
+        #         await client.get_channel(goodnight_channel).send('Goodnight Knoble :)')
+        #         time.sleep(0.1)
         
         await client.get_channel(goodnight_channel).send(f'Goodnight {mention} :)')
+        count_goodnight(member.name)
 
         # rare goodnight clause
         if is_rare_goodnight():
             pp(f'\n\tSending rare goodnight as well :)',True)
             await client.get_channel(goodnight_channel).send(f'{random.choice(RARE_GOODNIGHT_OPTIONS)}')
-    
+            count_rare_goodnight(member.name)
+
     pp("\tvc process done", True)
 
 @client.event
@@ -308,6 +303,38 @@ async def sweet_nothings():
         selected_message = random.choice(GOODNIGHT_QUIPS)
         await channel.send(selected_message)
     
+        hour = datetime.now().hour
+        # reset rare goodnight chance on first hour of the day
+        if hour == 0 and rare_goodnight_has_not_been_set:
+            global todays_rare_gn_chance, rare_goodnight_has_not_been_set, user_activity
+            
+            # send yesterdays rare goodnight chance in the goodnight channel 
+            try:
+                yesterdays_chance = todays_rare_gn_chance*100
+                await client.get_channel(goodnight_channel).send(f'Well Folks... Yesterdays rare goodnight chance was {yesterdays_chance} % :>)')
+            except Exception as e:
+                pp(f"\tCould not send yesterdays rare goodnight :()\n")
+                pp(e, True)
+
+            # reset todays rare goodnight chance
+            todays_rare_gn_chance = random.uniform(RARE_GN_CHANCE_MIN, RARE_GN_CHANCE_MAX)
+            rare_goodnight_has_not_been_set = False
+            
+            pp(f"\tUSER ACTIVITY", True)
+            for k, v in user_activity.items():
+                pp(f"\t{k} has {v['gn']} gn, {v['real_late']} real late, {v['rare_gn']} rare gn", True)
+
+            user_activity = {}
+            
+            pp(f"\tTodays rare goodnight chance is {todays_rare_gn_chance}", True)
+            pp(f"\tUser activity: {user_activity}", True)
+
+        # reset rare goodnight chance after first hour of the day
+        elif hour == 1:
+            global rare_goodnight_has_not_been_set
+            pp(f"\tResetting rare goodnight chance", True)
+            rare_goodnight_has_not_been_set = True
+
     pp("\tsweet_nothings done!", True)
 
 @tasks.loop(seconds=1, count=5)

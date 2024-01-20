@@ -8,7 +8,7 @@ from datetime import datetime
 import time
 import sys
 
-VERSION = "1.5.2"
+VERSION = "1.5.3"
 
 GOODNIGHT_TIMES = [22, 23, 0, 1, 2]
 REAL_LATE_HOURS = [2, 3, 4, 5] # EYES EMOJI
@@ -226,7 +226,12 @@ async def on_message(message):
                 pp("\tSending rare goodnight as well :)",True)
                 await message.reply(f'{random.choice(RARE_GOODNIGHT_OPTIONS)}')
                 count_rare_goodnight(message.author.name)
-    
+
+    # Check if the message starts with the command "g!v"
+    if message.content.startswith('g!v'):
+        # Respond with the version number
+        await message.channel.send(f'I am on v{VERSION} :) getting better erryday') 
+
     pp("\tmessage process done", True)
 
 @client.event
@@ -349,5 +354,6 @@ async def real_late_debacle():
     pp("\treal_late_debacle done!", True)
 
 if __name__ == "__main__":
+    pp(f"{rare_goodnight_has_not_been_set}, {todays_rare_gn_chance}, {user_activity}", True)
     pp(f"\t[BOT]initalizing and running sleepytime bot man, Version = {VERSION}",True)
     client.run(API_TOKEN)

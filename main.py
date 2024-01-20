@@ -311,7 +311,7 @@ async def sweet_nothings():
         hour = datetime.now().hour
         # reset rare goodnight chance on first hour of the day
         if hour == 0 and rare_goodnight_has_not_been_set:
-            global todays_rare_gn_chance, rare_goodnight_has_not_been_set, user_activity
+            global todays_rare_gn_chance, user_activity
             
             # send yesterdays rare goodnight chance in the goodnight channel 
             try:
@@ -336,7 +336,6 @@ async def sweet_nothings():
 
         # reset rare goodnight chance after first hour of the day
         elif hour == 1:
-            global rare_goodnight_has_not_been_set
             pp(f"\tResetting rare goodnight chance", True)
             rare_goodnight_has_not_been_set = True
 

@@ -1,3 +1,3 @@
-- Fixed bug for: Display yesterdays rare goodnight chance each day
-- Code prep for tracking user goodnights / goodnight behavior 
+- still debugging printing yesterdays rare good night chance.
+- 
 As always please DM mr pickolas for any bugs or additional ideas/concern/ragepepp you would like added

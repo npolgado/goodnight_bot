@@ -171,13 +171,10 @@ def count_rare_goodnight(name):
 async def on_ready():
     pp("Changing precense...")
     await client.change_presence(activity=discord.Game('waiting to goodnight :)'))
-
-    await client.get_channel(goodnight_channel).send(f'running Goodnight bot v{VERSION}!! Guud JAAAAB! See patch notes below:')
-    for i in get_patch_notes():
-        await client.get_channel(goodnight_channel).send(i)
     
     pp("Starting background task...",True)
-    await sweet_nothings.start()
+    try: await sweet_nothings.start()
+    except: pass
 
 @client.event
 async def on_message(message):
@@ -318,6 +315,11 @@ async def real_late_debacle():
         await channel.send(selected_message)
     
     pp("\treal_late_debacle done!", True)
+
+@commands.command(name='g!patch', help='Get the latest patch notes')
+async def patch(ctx):
+    patch_notes = get_patch_notes()
+    for note in patch_notes: await ctx.send(note)
 
 if __name__ == "__main__":
     pp(f"{rare_goodnight_has_not_been_set}, {todays_rare_gn_chance}, {user_activity}", True)

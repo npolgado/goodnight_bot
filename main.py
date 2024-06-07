@@ -274,7 +274,7 @@ async def sweet_nothings():
         await channel.send(selected_message)
     
         hour = datetime.now().hour
-        global todays_rare_gn_chance, user_activity, rare_goodnight_has_not_been_set
+        global todays_rare_gn_chance, rare_goodnight_has_not_been_set
         # reset rare goodnight chance on first hour of the day
         if hour == 0 and rare_goodnight_has_not_been_set:
             # send yesterdays rare goodnight chance in the goodnight channel 
@@ -301,14 +301,7 @@ async def sweet_nothings():
             todays_rare_gn_chance = random.uniform(RARE_GN_CHANCE_MIN, RARE_GN_CHANCE_MAX)
             rare_goodnight_has_not_been_set = False
             
-            pp(f"\tUSER ACTIVITY", True)
-            for k, v in user_activity.items():
-                pp(f"\t{k} has {v['gn']} gn, {v['real_late']} real late, {v['rare_gn']} rare gn", True)
-
-            user_activity = {}
-            
             pp(f"\tTodays rare goodnight chance is {todays_rare_gn_chance}", True)
-            pp(f"\tUser activity: {user_activity}", True)
 
         # reset rare goodnight chance after first hour of the day
         elif hour == 1:
@@ -329,6 +322,6 @@ async def real_late_debacle():
     pp("\treal_late_debacle done!", True)
 
 if __name__ == "__main__":
-    pp(f"{rare_goodnight_has_not_been_set}, {todays_rare_gn_chance}, {user_activity}", True)
+    pp(f"{rare_goodnight_has_not_been_set}, {todays_rare_gn_chance}", True)
     pp(f"\t[BOT]initalizing and running sleepytime bot man, Version = {VERSION}",True)
     client.run(API_TOKEN)

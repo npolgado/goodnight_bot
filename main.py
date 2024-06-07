@@ -136,6 +136,7 @@ goodnight_channel = 1190584590625165364
 
 todays_rare_gn_chance = random.uniform(RARE_GN_CHANCE_MIN, RARE_GN_CHANCE_MAX)
 rare_goodnight_has_not_been_set = True
+send_patch_notes = False
 
 is_stream_kingdom = False
 tracker = ActivityTracker()
@@ -307,6 +308,11 @@ async def sweet_nothings():
         elif hour == 1:
             pp(f"\tResetting rare goodnight chance", True)
             rare_goodnight_has_not_been_set = True
+
+    if not send_patch_notes:
+        notes = get_patch_notes()
+        for note in notes:
+            await channel.send(note)
 
     pp("\tsweet_nothings done!", True)
 

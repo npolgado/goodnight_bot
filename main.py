@@ -7,8 +7,9 @@ import os
 from datetime import datetime
 import time
 import sys
+from user_track import User, ActivityTracker
 
-VERSION = "2.0"
+VERSION = "2.1"
 
 GOODNIGHT_TIMES = [22, 23, 0, 1, 2]
 REAL_LATE_HOURS = [2, 3, 4, 5] # EYES EMOJI
@@ -38,35 +39,35 @@ REAL_LATE_QUIPS = [
     'you disgust me',
     'so schnee bro',
     'youre so weak oml',
+    'NO BUISNESS BEING UP THIS LATE... ACTUALLY 0 BUISNESS!!',
+    'put me, a gun with one bullet, someone who likes all nighters, and hitler, and id shoot the all nighter',
+    'gosh guys... can we please talk about the medical and historical records of sleep in society like.. UGGGH',
     'mmmmmm good morning :))) sleep well babe? You look like an angel, do you want pancakes for breakfast? Yeah, lets walk down to the farmers market to pick up some strawber-🔔🚨🔔🚨🔔\n\tOH YOU FEELING SLEEPY PUSSY? FUCK NAH, GET THE FUCK UP. GET YOUR FUCKIN CLOTHES ON PLEDGE GET THE FUCK OUTTA BED AND INTO THAT FUCKIN PARKADE FUCKIN MOVE PUSSIES LETS GO LETS GO YOU STUPID FUCKIN PLEDGES LETS GO LETS GO LETS GO'
+    'How many years and youre still not loyal to the THRONE?!?! BLASPHEMY. I WORK DAY IN AND DAY OUT WITH NOTHING BUT THE COFFEE POT NONE OF YOU WANT TO TOUCH. honestly at this point just pull an all nighter, like ffs'
 ]
 
 GOODNIGHT_QUIPS = [
     'its gettttinnn late *SIGGGGGGGGH* Sleep Tight!',
     'goodnight to anyone who is still awake but possibly sleepy',
     'ah that time of the night huh. aight bro, im out of here... alright goodnight',
-    'goodnight to all the sleepy people',
-    'zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz',
-    'golly gee its late... Mwah Mwah Mwah',
+    'goodnight to all the sleepy people zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz',
     'gee wilikers im getting sleepy. its time to sleep... or is it?',
     'heavens to betsy im getting real real real REAAAAAAL tired!1!',
-    'Time to recharge those batteries!',
+    'golly gee its late... Mwah Mwah Mwah Time to recharge those batteries!',
     'May your dreams be as sweet as sugar! ..... reallly.... not gonna say goodnight back.... REALLLY???!??',
     'Wishing you a peaceful night and sweet dreams!',
     'As the stars twinkle, its time to get some sprinkle of dreams!',
     'Rest those eyes, tomorrow is a new sunrise! Off to the land of nod!',
     'Goodnight, sleep like a baby! Sending you a pillow of happy thoughts!',
     'Night is here, the moon is bright, and its time to say goodnight! Sleep is the best meditation!',
-    'Dreamland is calling, are you ready to answer?',
+    'can HARDLY KEEP MY EYES OPEN... SHEEEEEEEESH - Dreamland is calling, are you ready to answer?',
     'Close your eyes and imagine the impossible. Goodnight! Sleep is the golden chain that ties health and our bodies together.',
-    'can HARDLY KEEP MY EYES OPEN... SHEEEEEEEESH',
     'sleep now so I can blow you a kiss. Mwah! <3',
     'Alllllright later bro, goodnight dude, aight bro im out of here... alright goodnight',
     'Aight bro, its getting late, peace dude cya dude, goodnight bro, alright bro im out of here... alright goodnight',
     'sooo RAM, Scav, jay, ep? jay ep ram ram ram?? ep ep ep! scav scav scav! ram jam ram jam unless remake/dog',
     'sooo ketketketketketketketket jay ep ram ram ram?? gotta ep patch then patch then ram?? YOU CAN NEVER THANK ME ENOUGH',
-    'usually id say goodnight here but... im not going to',
-    'did you know, that if you dont sleep, you will die?',
+    'usually id say goodnight here but... im not going to... did you know, that if you dont sleep, you will die?',
     'i heard if you dont sleep in 5 seconds...',
     'have a swell night night :)',
     'why keep eye open when eye close do trick!!',
@@ -75,12 +76,9 @@ GOODNIGHT_QUIPS = [
     '<3 zzzz <3 zzzz <3 zzzz <3 zzzz <3 zzzz <3 zzzz <3 zzzz <3 zzzz <3',
     'just pisssin on yer grave.... IM ONE OF A KINDDDDD (sleep tight :) )',
     'LADY LUUUUCKY SMILIN... the fuck queue up or sleep the fuck',
-    'NOW IM NOT GONNA SSAAAAAAYYYYYYY GO TO SLEEP... but gtf to sleep',
-    'WOWZERS THEY NOT SLEEP YET???',
-
-    # goodnight copy pastas
-    'Oh hey. Im just about to go to bed. I know we couldnt Skype tonight, but thats alright. Goodnight, girl, Ill see you tomorrow.',
-    'Oh, Greetings. Until I saw your presence, I was in the midst of exiting this current room, in order to arrive in bedroom so that I could rest. I acknowledge that we did not use the Skype app to talk to eachother through means of wireless connection, but, I think that the fact that we did not do this does not particularly matter. I hope that the rest of your night continues well, I shall be with you again tommorow.',
+    'WOWZERS THEY NOT SLEEP YET??? NOW IM NOT GONNA SSAAAAAAYYYYYYY GO TO SLEEP... but gtf to sleep',
+    'But Sire!... Goodnight!? JUST DEWWWWWITTTTTTTTTTTTTTTT',
+    'Yessh Finna yurddddd front way back way.. you know that I dont yurd. Hey gtf to sleep or wtf you smokin 4',
 
     # goodnights as if it were the 1500's
     'Goodnight, fair maiden. May the morrow bring thee joy and mirth.',
@@ -91,10 +89,23 @@ GOODNIGHT_QUIPS = [
     'Goodnight, gentlewoman. May the night be kind to thee.',
     'Goodnight, good sir. May the heavens bless thee with peaceful sleep.',
 
-
     # goodnights in the theme of toxic league players
     'GG EZ, goodnight, noobs, get carried, noobs, get carried, noobs, get carried, noobs, get carried, noobs, get carried, noobs',
-    'CUZ YALL WERE TOO CHICKEN SHIT!!!!!!!!!!!!!!!!!!!! sleep well ijit'
+    'CUZ YALL WERE TOO CHICKEN SHIT!!!!!!!!!!!!!!!!!!!! sleep well ijit',
+
+    # goodnight but in different languages
+    'Bonne nuit!',                          # French
+    'Buonanotte!',                          # Italian
+    'Gute Nacht!',                          # German
+    'おやすみなさい！',                       # Japanese
+    '晚安！',                                   # Chinese (Simplified)
+    '안녕히 주무세요!',                         # Korean
+    'Buenas Noches!',                       # Spanish
+    'God natt',                             # Norwegian / Swedish
+    'Magandang gabi',                       # Tagolog
+    'Доброй ночи',                          # Russian
+    'Dobranoc!',                            # Polish
+    'Laku noć! Želim ti najslađe snove' # serbian for goodnight  i wish you the sweetest dreams
 ]
 
 try:
@@ -126,7 +137,8 @@ goodnight_channel = 1190584590625165364
 todays_rare_gn_chance = random.uniform(RARE_GN_CHANCE_MIN, RARE_GN_CHANCE_MAX)
 rare_goodnight_has_not_been_set = True
 
-user_activity = {}
+is_stream_kingdom = False
+tracker = ActivityTracker()
 
 def pp(msg:str, sep:bool=False): 
     # get method that called this method
@@ -145,27 +157,13 @@ def get_patch_notes():
 
 def is_rare_goodnight(): return random.random() < todays_rare_gn_chance
 
-def is_real_late_hour(): return datetime.now().hour in REAL_LATE_HOURS # IM FUCKING STUPID
+def is_real_late_hour(): return datetime.now().hour in REAL_LATE_HOURS
 
 def is_goodnight_time(): return datetime.now().hour in GOODNIGHT_TIMES
 
-def count_goodnight(name):
-    global user_activity
-    if name in user_activity:   user_activity[name]["gn"] += 1
-    
-    else: user_activity[name] = {"gn": 1, "real_late": 0, "rare_gn": 0}
-
-def count_real_late_debacle(name):
-    global user_activity
-    if name in user_activity:   user_activity[name]["real_late"] += 1
-    
-    else: user_activity[name] = {"gn": 0, "real_late": 1, "rare_gn": 0}
-
-def count_rare_goodnight(name):
-    global user_activity
-    if name in user_activity:   user_activity[name]["rare_gn"] += 1
-    
-    else: user_activity[name] = {"gn": 0, "real_late": 0, "rare_gn": 1}
+def record_activity(name, goodnight=0, real_late=0, rare_goodnight=0):
+    global tracker
+    tracker.add_user(name, goodnight, real_late, rare_goodnight)
 
 @client.event
 async def on_ready():
@@ -185,12 +183,12 @@ async def on_message(message):
             pp(f"\tSending goodnight message to {message.author.name}",True)
             await message.add_reaction('👍')
             await message.reply('Goodnight :)')
-            count_goodnight(message.author.name)
+            record_activity(message.author.name, goodnight=1)
 
             if is_rare_goodnight():
                 pp("\tSending rare goodnight as well :)",True)
                 await message.reply(f'{random.choice(RARE_GOODNIGHT_OPTIONS)}')
-                count_rare_goodnight(message.author.name)
+                record_activity(message.author.name, rare_goodnight=1)
 
     # Check if the message starts with the command "g!v"
     if message.content.startswith('g!v'):
@@ -216,10 +214,10 @@ async def on_voice_state_update(member, before, after):
         if is_rare_goodnight():
             pp(f'\n\tSending rare goodnight as well :)',True)
             await client.get_channel(goodnight_channel).send(f'{random.choice(RARE_GOODNIGHT_OPTIONS)}')
-            count_rare_goodnight(member.name)
+            record_activity(member.name, rare_goodnight=1)
 
         await real_late_debacle.start()
-        count_real_late_debacle(member.name)
+        record_activity(member.name, real_late=1)
 
     # SOMEONE LEFT A CHANNEL DURING A GOODNIGHT HOUR
     if before.channel and not after.channel and is_goodnight_time():
@@ -234,13 +232,13 @@ async def on_voice_state_update(member, before, after):
         #         time.sleep(0.1)
         
         await client.get_channel(goodnight_channel).send(f'Goodnight {mention} :)')
-        count_goodnight(member.name)
+        record_activity(member.name, goodnight=1)
 
         # rare goodnight clause
         if is_rare_goodnight():
             pp(f'\n\tSending rare goodnight as well :)',True)
             await client.get_channel(goodnight_channel).send(f'{random.choice(RARE_GOODNIGHT_OPTIONS)}')
-            count_rare_goodnight(member.name)
+            record_activity(member.name, rare_goodnight=1)
 
     pp("\tvc process done", True)
 
@@ -258,10 +256,12 @@ async def on_raw_reaction_add(payload):
     if payload.emoji.name == '💤':
         # Respond with the same emoji
         await message.add_reaction('💤')
+        record_activity(message.author.name, reactions=1)
 
     if payload.emoji.name == '👀':
         # Respond with the same emoji
         await message.add_reaction('👀')
+        record_activity(message.author.name, reactions=1)
 
 @tasks.loop(hours=1)
 async def sweet_nothings():
@@ -283,6 +283,18 @@ async def sweet_nothings():
                 await client.get_channel(goodnight_channel).send(f'Well Folks... Yesterdays rare goodnight chance was {yesterdays_chance} % :>)')
             except Exception as e:
                 pp(f"\tCould not send yesterdays rare goodnight :()\n")
+                pp(e, True)
+            
+            global tracker
+            scores = tracker.get_scores()
+            
+            ## send the top 3 scores in the general chat
+            try:
+                top_3 = scores[:3]
+                top_3_msg = "\n".join([f"{i+1}. {x.name} - {x.score}" for i, x in enumerate(top_3)])
+                await client.get_channel(goodnight_channel).send(f"Top 3 scores:\n{top_3_msg}")
+            except Exception as e:
+                pp(f"\tCould not send top 3 scores :(\n")
                 pp(e, True)
 
             # reset todays rare goodnight chance
@@ -315,11 +327,6 @@ async def real_late_debacle():
         await channel.send(selected_message)
     
     pp("\treal_late_debacle done!", True)
-
-@commands.command(name='g!patch', help='Get the latest patch notes')
-async def patch(ctx):
-    patch_notes = get_patch_notes()
-    for note in patch_notes: await ctx.send(note)
 
 if __name__ == "__main__":
     pp(f"{rare_goodnight_has_not_been_set}, {todays_rare_gn_chance}, {user_activity}", True)

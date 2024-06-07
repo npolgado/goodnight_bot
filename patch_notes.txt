@@ -1,6 +1,5 @@
-- WE'RE SO FUCKING BACK!!!!!!!!! V2 BABY
+- WE'RE SO FUCKING BACK!!!!!!!!! V2.1 BABY
 - refined quips further
-- REAL LATE NIGHT HOURS HOT FIX
-- backend work for dailies / scoring system
-- thoughts on a reminder bot???
+- improved on user tracker - top scored posted in goodnight channel at end of day
+- inital work on is_stream_kingdom logic
 As always please DM mr pickolas for any bugs or additional ideas/concern/ragepepp you would like added

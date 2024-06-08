@@ -276,7 +276,7 @@ async def sweet_nothings():
         await channel.send(selected_message)
     
         hour = datetime.now().hour
-        global todays_rare_gn_chance, rare_goodnight_has_not_been_set
+        global todays_rare_gn_chance, rare_goodnight_has_not_been_set, send_patch_notes, send_user_activity
         # reset rare goodnight chance on first hour of the day
         if hour == 0 and rare_goodnight_has_not_been_set:
             # send yesterdays rare goodnight chance in the goodnight channel 

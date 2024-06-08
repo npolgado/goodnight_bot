@@ -137,8 +137,9 @@ goodnight_channel = 1190584590625165364
 todays_rare_gn_chance = random.uniform(RARE_GN_CHANCE_MIN, RARE_GN_CHANCE_MAX)
 rare_goodnight_has_not_been_set = True
 send_patch_notes = False
-
+send_user_activity = False
 is_stream_kingdom = False
+
 tracker = ActivityTracker()
 
 def pp(msg:str, sep:bool=False): 
@@ -289,14 +290,17 @@ async def sweet_nothings():
             global tracker
             scores = tracker.get_scores()
             
-            ## send the top 3 scores in the general chat
-            try:
-                top_3 = scores[:3]
-                top_3_msg = "\n".join([f"{i+1}. {x.name} - {x.score}" for i, x in enumerate(top_3)])
-                await client.get_channel(goodnight_channel).send(f"Top 3 scores:\n{top_3_msg}")
-            except Exception as e:
-                pp(f"\tCould not send top 3 scores :(\n")
-                pp(e, True)
+            if not send_user_activity:
+                ## send the top 3 scores in the general chat
+                try:
+                    top_3 = scores[:3]
+                    top_3_msg = "\n".join([f"{i+1}. {x.name} - {x.score}" for i, x in enumerate(top_3)])
+                    await client.get_channel(goodnight_channel).send(f"Top 3 scores:\n{top_3_msg}")
+                except Exception as e:
+                    pp(f"\tCould not send top 3 scores :(\n")
+                    pp(e, True)
+                
+                send_user_activity = True
 
             # reset todays rare goodnight chance
             todays_rare_gn_chance = random.uniform(RARE_GN_CHANCE_MIN, RARE_GN_CHANCE_MAX)
@@ -310,9 +314,8 @@ async def sweet_nothings():
             rare_goodnight_has_not_been_set = True
 
     if not send_patch_notes:
-        notes = get_patch_notes()
-        for note in notes:
-            await channel.send(note)
+        for note in get_patch_notes(): await channel.send(note)
+        send_patch_notes = True
 
     pp("\tsweet_nothings done!", True)
 

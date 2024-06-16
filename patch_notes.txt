@@ -1,5 +1,6 @@
-- WE'RE SO FUCKING BACK!!!!!!!!! V2.1 BABY
+- WE'RE SO FUCKING BACK!!!!!!!!! V2.2 AH-GI
 - refined quips further
 - improved on user tracker - top scored posted in goodnight channel at end of day
 - inital work on is_stream_kingdom logic
 As always please DM mr pickolas for any bugs or additional ideas/concern/ragepepp you would like added
+source code is here - www.github.com/npolgado/goodnight_bot

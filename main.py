@@ -9,7 +9,7 @@ import time
 import sys
 from user_track import User, ActivityTracker
 
-VERSION = "2.1"
+VERSION = "2.2"
 
 GOODNIGHT_TIMES = [22, 23, 0, 1, 2]
 REAL_LATE_HOURS = [2, 3, 4, 5] # EYES EMOJI
@@ -39,6 +39,9 @@ REAL_LATE_QUIPS = [
     'you disgust me',
     'so schnee bro',
     'youre so weak oml',
+    'which one of my so called richards, which one of my- which one of my-',
+    'im finna pass on this body like john stockton',
+    'tryna strike a chord??',
     'NO BUISNESS BEING UP THIS LATE... ACTUALLY 0 BUISNESS!!',
     'put me, a gun with one bullet, someone who likes all nighters, and hitler, and id shoot the all nighter',
     'gosh guys... can we please talk about the medical and historical records of sleep in society like.. UGGGH',
@@ -79,6 +82,7 @@ GOODNIGHT_QUIPS = [
     'WOWZERS THEY NOT SLEEP YET??? NOW IM NOT GONNA SSAAAAAAYYYYYYY GO TO SLEEP... but gtf to sleep',
     'But Sire!... Goodnight!? JUST DEWWWWWITTTTTTTTTTTTTTTT',
     'Yessh Finna yurddddd front way back way.. you know that I dont yurd. Hey gtf to sleep or wtf you smokin 4',
+    'Ah yes! I know this was all fun and games, really just pleasantries really, however I must conceed it is Pen Time into sleep into pen into sleep',
 
     # goodnights as if it were the 1500's
     'Goodnight, fair maiden. May the morrow bring thee joy and mirth.',
@@ -92,6 +96,7 @@ GOODNIGHT_QUIPS = [
     # goodnights in the theme of toxic league players
     'GG EZ, goodnight, noobs, get carried, noobs, get carried, noobs, get carried, noobs, get carried, noobs, get carried, noobs',
     'CUZ YALL WERE TOO CHICKEN SHIT!!!!!!!!!!!!!!!!!!!! sleep well ijit',
+    'and of course he doesnt block the auto... Perfect, just fucking perfect. Imagine not playing support to its highest potentially while im ADC. brb crying myself to sleep',
 
     # goodnight but in different languages
     'Bonne nuit!',                          # French
@@ -302,9 +307,10 @@ async def sweet_nothings():
                 
                 send_user_activity = True
 
-            # reset todays rare goodnight chance
+            # reset vars
             todays_rare_gn_chance = random.uniform(RARE_GN_CHANCE_MIN, RARE_GN_CHANCE_MAX)
             rare_goodnight_has_not_been_set = False
+            send_user_activity = False
             
             pp(f"\tTodays rare goodnight chance is {todays_rare_gn_chance}", True)
 

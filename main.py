@@ -32,6 +32,8 @@ REAL_LATE_QUIPS = [
     'aight im done',
     'im so done',
     'youll never hear from me again',
+    '╭∩╮(-_-)╭∩╮',
+    '╭∩╮(-_-)╭∩╮ ╭∩╮(-_-)╭∩╮',
     'fuming atm',
     'curse words are allowed in this server at this moment btw... just saying',
     '>:(',
